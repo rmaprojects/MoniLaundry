@@ -78,7 +78,7 @@ class UserRemoteDatasource @Inject constructor(
         return result?.id
     }
 
-    suspend fun getOwnerInfo(uuid: String): OwnerDto {
+    suspend fun getOwnerLoginInfo(uuid: String): OwnerDto {
         return supabaseClient.postgrest[SupabaseTables.USERS].select(
             columns = Columns.raw(
                 """
@@ -93,7 +93,7 @@ class UserRemoteDatasource @Inject constructor(
         }.decodeSingle()
     }
 
-    suspend fun getEmployeeInfo(uuid: String): EmployeeDto {
+    suspend fun getEmployeeLoginInfo(uuid: String): EmployeeDto {
         return supabaseClient.postgrest[SupabaseTables.USERS].select(
             columns = Columns.raw(
                 """
@@ -125,7 +125,7 @@ class UserRemoteDatasource @Inject constructor(
         return retrieveUserInfo()
     }
 
-    suspend fun retrieveUserInfo(): UserInfo? {
+    fun retrieveUserInfo(): UserInfo? {
         return supabaseClient.auth.currentUserOrNull()
     }
 
@@ -146,12 +146,14 @@ class UserRemoteDatasource @Inject constructor(
         }.countOrNull() == 1L
     }
 
-    suspend fun getUserById(uuid: String): UserDto {
-        return supabaseClient.postgrest[SupabaseTables.USERS].select {
-            filter {
-                UserDto::id eq uuid
-            }
-        }.decodeSingle()
+    suspend fun deleteEmployee(employeeId: String) {
+        val employee = getEmployeeLoginInfo(employeeId)
+        supabaseClient.auth.admin.deleteUser(employee.id)
     }
 
+    suspend fun deleteAccount() {
+        supabaseClient.auth.signOut(SignOutScope.LOCAL)
+        supabaseClient.auth.admin.deleteUser(LocalUserData.uuid ?: "")
+        LocalUserData.clear()
+    }
 }

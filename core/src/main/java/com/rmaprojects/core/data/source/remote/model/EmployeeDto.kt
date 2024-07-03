@@ -9,11 +9,11 @@ data class EmployeeDto(
     @SerialName("username") val username: String,
     @SerialName("role") val role: String,
     @SerialName("email") val email: String,
-    @SerialName("employee_details") val employeeDetails: EmployeeDetails,
+    @SerialName("employee_details") val employeeDetails: EmployeeDetailsDto,
 )
 
 @Serializable
-data class EmployeeDetails(
+data class EmployeeDetailsDto(
     @SerialName("id") val id: String,
     @SerialName("full_name") val fullName: String,
     @SerialName("date_of_birth") val dateOfBirth: String,

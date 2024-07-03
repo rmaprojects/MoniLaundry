@@ -1,4 +1,4 @@
-package com.rmaprojects.core.domain
+package com.rmaprojects.core.domain.repository
 
 import com.rmaprojects.core.common.Roles
 

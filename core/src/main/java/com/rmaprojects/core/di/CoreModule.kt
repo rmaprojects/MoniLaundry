@@ -2,9 +2,11 @@ package com.rmaprojects.core.di
 
 import com.rmaprojects.core.BuildConfig
 import com.rmaprojects.core.data.repository.CoreAuthRepositoryImpl
+import com.rmaprojects.core.data.repository.CoreBranchRepositoryImpl
 import com.rmaprojects.core.data.source.remote.BranchRemoteDatasource
 import com.rmaprojects.core.data.source.remote.UserRemoteDatasource
-import com.rmaprojects.core.domain.CoreAuthRepository
+import com.rmaprojects.core.domain.repository.CoreAuthRepository
+import com.rmaprojects.core.domain.repository.CoreBranchRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -68,8 +70,15 @@ object CoreModule {
     @Singleton
     fun provideCoreAuthRepository(
         userRemoteDatasource: UserRemoteDatasource,
-        branchRemoteDatasource: BranchRemoteDatasource
     ): CoreAuthRepository {
         return CoreAuthRepositoryImpl(userRemoteDatasource)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCoreBranchRepository(
+        branchRemoteDatasource: BranchRemoteDatasource
+    ): CoreBranchRepository {
+        return CoreBranchRepositoryImpl(branchRemoteDatasource)
     }
 }

@@ -3,7 +3,7 @@ package com.rmaprojects.core.data.repository
 import com.rmaprojects.core.common.Roles
 import com.rmaprojects.core.data.source.local.LocalUserData
 import com.rmaprojects.core.data.source.remote.UserRemoteDatasource
-import com.rmaprojects.core.domain.CoreAuthRepository
+import com.rmaprojects.core.domain.repository.CoreAuthRepository
 import io.ktor.http.HttpStatusCode
 import javax.inject.Inject
 import kotlin.random.Random
@@ -17,7 +17,7 @@ class CoreAuthRepositoryImpl @Inject constructor(
         if (isUserExists) {
             val user = userRemoteDatasource.getUserByUsername(username)
             if (user.role == "owner") {
-                userRemoteDatasource.getOwnerInfo(user.id).let {
+                userRemoteDatasource.getOwnerLoginInfo(user.id).let {
                     userRemoteDatasource.signIn(it.email, password)
                     LocalUserData.apply {
                         this.role = it.role
@@ -28,7 +28,7 @@ class CoreAuthRepositoryImpl @Inject constructor(
                     }
                 }
             } else {
-                userRemoteDatasource.getEmployeeInfo(user.id).let {
+                userRemoteDatasource.getEmployeeLoginInfo(user.id).let {
                     userRemoteDatasource.signIn(it.email, password)
                     LocalUserData.apply {
                         this.role = it.role
@@ -61,7 +61,7 @@ class CoreAuthRepositoryImpl @Inject constructor(
             userRemoteDatasource.signUpOwner(generateRandomEmails(), password, username, ownerData)
             val uuid = userRemoteDatasource.retrieveUserInfo()?.id
             if (uuid != null) {
-                val owner = userRemoteDatasource.getOwnerInfo(uuid)
+                val owner = userRemoteDatasource.getOwnerLoginInfo(uuid)
                 LocalUserData.apply {
                     this.uuid = owner.id
                     this.email = owner.email

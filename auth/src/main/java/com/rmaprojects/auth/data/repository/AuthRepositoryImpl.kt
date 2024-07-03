@@ -3,7 +3,7 @@ package com.rmaprojects.auth.data.repository
 import com.rmaprojects.apirequeststate.ResponseState
 import com.rmaprojects.auth.domain.repository.AuthRepository
 import com.rmaprojects.core.common.Roles
-import com.rmaprojects.core.domain.CoreAuthRepository
+import com.rmaprojects.core.domain.repository.CoreAuthRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
