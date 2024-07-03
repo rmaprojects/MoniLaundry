@@ -1,7 +1,11 @@
 [versions]
 agp = "8.5.0"
+apiresponsewrapper = "1.8"
+compose-destinations = "2.1.0-beta09"
+hiltNavigationCompose = "1.2.0"
 kotpref = "2.13.1"
 ktorClientOkhttp = "2.3.12"
+materialIconsExtended = "1.6.8"
 supabase = "2.5.0"
 kotlin = "2.0.0"
 ksp = "2.0.0-1.0.22"
@@ -9,13 +13,20 @@ coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
-lifecycleRuntimeKtx = "2.8.2"
+lifecycleRuntimeKtx = "2.8.3"
 activityCompose = "1.9.0"
 composeBom = "2024.06.00"
 hilt = "2.50"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycleRuntimeKtx" }
+androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
+apiresponsewrapper = { module = "com.github.rmaprojects:apiresponsewrapper", version.ref = "apiresponsewrapper" }
+compose-destinations-bottomsheet = { group = "io.github.raamcosta.compose-destinations", name = "bottom-sheet", version.ref = "compose-destinations" }
+compose-destinations-ksp = { group = "io.github.raamcosta.compose-destinations", name = "ksp", version.ref = "compose-destinations" }
+compose-destinations-core = { group = "io.github.raamcosta.compose-destinations", name = "core", version.ref = "compose-destinations" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
 kotpref = { module = "com.chibatching.kotpref:kotpref", version.ref = "kotpref" }

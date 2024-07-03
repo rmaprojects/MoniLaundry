@@ -1,10 +1,10 @@
 package com.rmaprojects.core.di
 
 import com.rmaprojects.core.BuildConfig
-import com.rmaprojects.core.data.repository.AuthRepositoryImpl
+import com.rmaprojects.core.data.repository.CoreAuthRepositoryImpl
 import com.rmaprojects.core.data.source.remote.BranchRemoteDatasource
 import com.rmaprojects.core.data.source.remote.UserRemoteDatasource
-import com.rmaprojects.core.domain.AuthRepository
+import com.rmaprojects.core.domain.CoreAuthRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,7 +22,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class CoreModule {
+object CoreModule {
     @Provides
     @Singleton
     fun provideSupabaseClient(): SupabaseClient {
@@ -66,10 +66,10 @@ class CoreModule {
 
     @Provides
     @Singleton
-    fun provideCoreRepository(
+    fun provideCoreAuthRepository(
         userRemoteDatasource: UserRemoteDatasource,
         branchRemoteDatasource: BranchRemoteDatasource
-    ): AuthRepository {
-        return AuthRepositoryImpl(userRemoteDatasource, branchRemoteDatasource)
+    ): CoreAuthRepository {
+        return CoreAuthRepositoryImpl(userRemoteDatasource)
     }
 }

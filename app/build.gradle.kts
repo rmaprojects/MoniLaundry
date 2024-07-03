@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.ksp)
+    alias(libs.plugins.dagger.hilt)
 }
 
 apply(from = "../shared_dependencies.gradle")
@@ -54,6 +55,10 @@ dependencies {
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+
+    implementation(project(":employee"))
+    implementation(project(":owner"))
+    implementation(project(":auth"))
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

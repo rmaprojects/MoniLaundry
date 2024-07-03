@@ -1,7 +1,7 @@
 package com.rmaprojects.core.data.source.remote
 
 import com.rmaprojects.core.data.source.remote.model.BranchDto
-import com.rmaprojects.core.data.source.remote.model.EmployeeDto
+import com.rmaprojects.core.data.source.remote.model.EmployeeDetails
 import com.rmaprojects.core.data.source.remote.tables.SupabaseTables
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.postgrest
@@ -26,17 +26,17 @@ class BranchRemoteDatasource @Inject constructor(
 
     suspend fun getEmployeeList(
         branchId: String? = null
-    ): List<EmployeeDto> {
+    ): List<EmployeeDetails> {
         return supabaseClient.postgrest[SupabaseTables.EMPLOYEE]
             .select(
                 request =
                 if (branchId == null) ({})
                 else ({
                     filter {
-                        EmployeeDto::branchId eq branchId
+                        EmployeeDetails::branchId eq branchId
                     }
                 })
             )
-            .decodeList<EmployeeDto>()
+            .decodeList<EmployeeDetails>()
     }
 }

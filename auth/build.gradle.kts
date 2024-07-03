@@ -41,8 +41,11 @@ android {
 
 dependencies {
 
-    implementation(project(":core"))
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.material.icons.extended)
+
+    implementation(project(":core"))
+    
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

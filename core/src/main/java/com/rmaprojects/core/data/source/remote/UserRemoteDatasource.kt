@@ -2,7 +2,6 @@ package com.rmaprojects.core.data.source.remote
 
 import com.rmaprojects.core.common.Roles
 import com.rmaprojects.core.data.source.local.LocalUserData
-import com.rmaprojects.core.data.source.remote.model.BranchDto
 import com.rmaprojects.core.data.source.remote.model.EmployeeDto
 import com.rmaprojects.core.data.source.remote.model.OwnerDto
 import com.rmaprojects.core.data.source.remote.model.UserDto
@@ -11,12 +10,16 @@ import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.gotrue.SignOutScope
 import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.gotrue.providers.builtin.Email
+import io.github.jan.supabase.gotrue.user.UserInfo
 import io.github.jan.supabase.postgrest.postgrest
+import io.github.jan.supabase.postgrest.query.Columns
+import io.github.jan.supabase.postgrest.query.Count
 import io.ktor.client.HttpClient
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.request.url
 import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
@@ -32,8 +35,8 @@ class UserRemoteDatasource @Inject constructor(
         email: String,
         password: String,
         employeeData: Roles.Employee
-    ) {
-        ktorClient.post {
+    ): HttpStatusCode {
+        val result = ktorClient.post {
             url("auth/v1/signup")
             contentType(ContentType.Application.Json)
             setBody(
@@ -43,6 +46,7 @@ class UserRemoteDatasource @Inject constructor(
                     put(
                         "data", buildJsonObject {
                             put("username", username)
+                            put("role", "employee")
                             put("full_name", employeeData.fullName)
                             put("date_of_birth", employeeData.dateOfBirth)
                             put("living_place", employeeData.livingPlace)
@@ -51,6 +55,8 @@ class UserRemoteDatasource @Inject constructor(
                 }
             )
         }
+
+        return result.status
     }
 
     suspend fun signUpOwner(
@@ -62,9 +68,10 @@ class UserRemoteDatasource @Inject constructor(
         val result = supabaseClient.auth.signUpWith(Email) {
             this.email = email
             this.password = password
-            data = buildJsonObject {
+            this.data = buildJsonObject {
                 put("username", username)
                 put("name", ownerData.name)
+                put("role", "owner")
             }
         }
 
@@ -72,15 +79,29 @@ class UserRemoteDatasource @Inject constructor(
     }
 
     suspend fun getOwnerInfo(uuid: String): OwnerDto {
-        return supabaseClient.postgrest[SupabaseTables.OWNER].select {
+        return supabaseClient.postgrest[SupabaseTables.USERS].select(
+            columns = Columns.raw(
+                """
+                    *,
+                    tbl_owner(*)
+                """.trimIndent()
+            )
+        ) {
             filter {
                 OwnerDto::id eq uuid
             }
         }.decodeSingle()
     }
 
-    suspend fun getEmployeeInfo(uuid: String): List<EmployeeDto> {
-        return supabaseClient.postgrest[SupabaseTables.EMPLOYEE].select {
+    suspend fun getEmployeeInfo(uuid: String): EmployeeDto {
+        return supabaseClient.postgrest[SupabaseTables.USERS].select(
+            columns = Columns.raw(
+                """
+                    *,
+                    tbl_employee(*)
+                """.trimIndent()
+            )
+        ) {
             filter {
                 EmployeeDto::id eq uuid
             }
@@ -95,17 +116,40 @@ class UserRemoteDatasource @Inject constructor(
     suspend fun signIn(
         email: String,
         password: String
-    ) {
+    ): UserInfo? {
         supabaseClient.auth.signInWith(Email) {
             this.email = email
             this.password = password
         }
+
+        return retrieveUserInfo()
+    }
+
+    suspend fun retrieveUserInfo(): UserInfo? {
+        return supabaseClient.auth.currentUserOrNull()
     }
 
     suspend fun getUserByUsername(username: String): UserDto {
         return supabaseClient.postgrest[SupabaseTables.USERS].select {
             filter {
                 UserDto::username eq username
+            }
+        }.decodeSingle()
+    }
+
+    suspend fun isUserExitsInDatabase(username: String): Boolean {
+        return supabaseClient.postgrest[SupabaseTables.USERS].select {
+            filter {
+                UserDto::username eq username
+            }
+            count(Count.EXACT)
+        }.countOrNull() == 1L
+    }
+
+    suspend fun getUserById(uuid: String): UserDto {
+        return supabaseClient.postgrest[SupabaseTables.USERS].select {
+            filter {
+                UserDto::id eq uuid
             }
         }.decodeSingle()
     }
