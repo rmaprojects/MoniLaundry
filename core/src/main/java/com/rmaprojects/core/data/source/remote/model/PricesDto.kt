@@ -13,7 +13,7 @@ data class PricesDto(
     @SerialName("type")
     val type: String,
     @SerialName("branch_id")
-    val branchId: String,
+    val branchId: String? = "",
     @SerialName("id")
-    val id: String = ""
+    val id: String? = ""
 )

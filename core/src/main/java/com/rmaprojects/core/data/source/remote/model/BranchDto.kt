@@ -5,10 +5,11 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class BranchDto(
-    @SerialName("longitude") val longitude: Float,
-    @SerialName("latitude") val latitude: Float,
     @SerialName("owner_id") val ownerId: String,
+    @SerialName("latitude") val latitude: Float? = 0f,
+    @SerialName("longitude") val longitude: Float? = 0f,
     @SerialName("id") val id: String = "",
     @SerialName("image_url") val imageUrl: String? = "",
-    @SerialName("created_at") val createdAt: String = ""
+    @SerialName("created_at") val createdAt: String = "",
+    @SerialName("tbl_employee") val employees: List<EmployeeDetailsDto>? = null
 )

@@ -7,6 +7,7 @@ import com.rmaprojects.core.data.source.remote.model.PricesDto
 import com.rmaprojects.core.data.source.remote.tables.SupabaseTables
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.postgrest
+import io.github.jan.supabase.postgrest.query.Columns
 import javax.inject.Inject
 
 class BranchRemoteDatasource @Inject constructor(
@@ -19,7 +20,13 @@ class BranchRemoteDatasource @Inject constructor(
     }
 
     suspend fun getStoreBranchInfo(branchId: String): BranchDto {
-        return supabaseClient.postgrest[SupabaseTables.BRANCH].select {
+        return supabaseClient.postgrest[SupabaseTables.BRANCH].select(
+            Columns.raw(
+                """
+                    *, tbl_employee(*)
+                """.trimIndent()
+            )
+        ) {
             filter {
                 BranchDto::id eq branchId
             }
@@ -51,13 +58,19 @@ class BranchRemoteDatasource @Inject constructor(
 
     suspend fun getEmployeeDetail(
         employeeId: String
-    ): List<EmployeeDetailsDto> {
+    ): EmployeeDetailsDto {
         return supabaseClient.postgrest[SupabaseTables.EMPLOYEE]
-            .select {
+            .select(
+                Columns.raw(
+                    """
+                        *, tbl_branch(*)
+                    """.trimIndent()
+                )
+            ) {
                 filter {
                     EmployeeDetailsDto::id eq employeeId
                 }
-            }.decodeList()
+            }.decodeSingle()
     }
 
     suspend fun insertNewBranch(
@@ -89,8 +102,8 @@ class BranchRemoteDatasource @Inject constructor(
         val userId = LocalUserData.uuid ?: throw Exception("You're signed out, please login")
         supabaseClient.postgrest[SupabaseTables.BRANCH].update(
             BranchDto(
-                newLongitude,
-                newLatitude,
+                longitude = newLongitude,
+                latitude = newLatitude,
                 imageUrl = newImageUrl,
                 ownerId = userId
             )
@@ -133,24 +146,25 @@ class BranchRemoteDatasource @Inject constructor(
     }
 
     suspend fun updateNewPrices(
+        branchId: String,
         listPrices: List<PricesDto>
     ) {
         supabaseClient.postgrest[SupabaseTables.PRICES].update(
             listPrices
         ) {
             filter {
-                PricesDto::branchId eq listPrices.first().branchId
+                PricesDto::branchId eq branchId
             }
         }
     }
 
     suspend fun getAllPrices(
         branchId: String
-    ) {
-        supabaseClient.postgrest[SupabaseTables.PRICES].select {
+    ): List<PricesDto> {
+        return supabaseClient.postgrest[SupabaseTables.PRICES].select {
             filter {
                 PricesDto::branchId eq branchId
             }
-        }
+        }.decodeList()
     }
 }

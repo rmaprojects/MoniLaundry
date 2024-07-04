@@ -21,4 +21,5 @@ data class EmployeeDetailsDto(
     @SerialName("branch_owner_id") val ownerBranchId: String,
     @SerialName("branch_id") val branchId: String,
     @SerialName("created_at") val createdAt: String = "",
+    @SerialName("tbl_branch") val branchDetail: BranchDto? = null
 )
