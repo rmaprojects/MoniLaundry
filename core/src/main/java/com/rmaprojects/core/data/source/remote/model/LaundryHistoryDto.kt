@@ -6,14 +6,14 @@ import java.io.Serial
 
 @Serializable
 data class LaundryHistoryDto(
-    @SerialName("order_id") val orderId: String,
-    @SerialName("created_at") val createdAt: String,
     @SerialName("name_customer") val customerName: String,
     @SerialName("address_customer") val customerAddress: String,
     @SerialName("status") val status: String,
-    @SerialName("employee_id") val employeeId: String,
     @SerialName("branch_id") val branchId: String,
-    @SerialName("tbl_history_details") val details: List<LaundryHistoryDetailsDto>,
+    @SerialName("employee_id") val employeeId: String,
+    @SerialName("order_id") val orderId: String? = "",
+    @SerialName("created_at") val createdAt: String? = "",
+    @SerialName("tbl_history_details") val details: List<LaundryHistoryDetailsDto>? = null,
 )
 
 @Serializable

@@ -3,10 +3,13 @@ package com.rmaprojects.core.di
 import com.rmaprojects.core.BuildConfig
 import com.rmaprojects.core.data.repository.CoreAuthRepositoryImpl
 import com.rmaprojects.core.data.repository.CoreBranchRepositoryImpl
+import com.rmaprojects.core.data.repository.CoreLaundryRepositoryImpl
 import com.rmaprojects.core.data.source.remote.BranchRemoteDatasource
+import com.rmaprojects.core.data.source.remote.LaundryRemoteDatasource
 import com.rmaprojects.core.data.source.remote.UserRemoteDatasource
 import com.rmaprojects.core.domain.repository.CoreAuthRepository
 import com.rmaprojects.core.domain.repository.CoreBranchRepository
+import com.rmaprojects.core.domain.repository.CoreLaundryRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -80,5 +83,13 @@ object CoreModule {
         branchRemoteDatasource: BranchRemoteDatasource
     ): CoreBranchRepository {
         return CoreBranchRepositoryImpl(branchRemoteDatasource)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCoreLaundryRepository(
+        laundryRemoteDatasource: LaundryRemoteDatasource
+    ): CoreLaundryRepository {
+        return CoreLaundryRepositoryImpl(laundryRemoteDatasource)
     }
 }
