@@ -6,13 +6,24 @@ import com.rmaprojects.core.data.source.remote.model.PricesDto
 
 interface CoreBranchRepository {
     suspend fun getAllBranch(): Result<List<BranchDto>>
-    suspend fun addBranch(longitude: Float, latitude: Float, imageUrl: String): Result<Boolean>
+    suspend fun addBranch(
+        longitude: Float, latitude: Float, imageUrl: String, name: String
+    ): Result<Boolean>
+
     suspend fun editBranch(
         branchId: String,
         newLongitude: Float,
         newLatitude: Float,
-        newImageUrl: String?
-    ): Result<Boolean>
+        newName: String,
+        newImageUrl: String?,
+        ): Result<Boolean>
+
+    suspend fun getAllBranchWithOrderHistory(
+        orderRangeFrom: String? = "",
+        orderRangeTo: String? = ""
+    ): Result<List<BranchDto>>
+
+    suspend fun deleteBranch(branchId: String): Result<Boolean>
     suspend fun getBranchDetails(branchId: String): Result<BranchDto>
     suspend fun getBranchEmployeeList(branchId: String): Result<List<EmployeeDetailsDto>>
     suspend fun getBranchEmployeeDetail(employeeId: String): Result<EmployeeDetailsDto>
@@ -21,4 +32,5 @@ interface CoreBranchRepository {
     suspend fun getAllBranchPrices(branchId: String): Result<List<PricesDto>>
     suspend fun addBranchPrices(pricesList: List<PricesDto>): Result<Boolean>
     suspend fun updateNewPrices(branchId: String, pricesList: List<PricesDto>): Result<Boolean>
+    suspend fun deletePrices(branchId: String, pricesId: String): Result<Boolean>
 }

@@ -19,6 +19,27 @@ class BranchRemoteDatasource @Inject constructor(
             .decodeList()
     }
 
+    suspend fun getAllBranchWithOrderHistory(
+        orderRangeFrom: String?,
+        orderRangeTo: String?
+    ): List<BranchDto> {
+        return supabaseClient.postgrest[SupabaseTables.BRANCH]
+            .select(
+                Columns.raw(
+                    """
+                        *, 
+                        tbl_laundry_history(*, tbl_history_details(*))
+                    """.trimIndent()
+                ),
+                request = if (orderRangeTo.isNullOrEmpty() || orderRangeFrom.isNullOrEmpty()) ({}) else ({
+                    filter {
+                        gte("tbl_laundry_history.created_at", orderRangeFrom)
+                        lte("tbl_laundry_history.created_at", orderRangeTo)
+                    }
+                })
+            ).decodeList()
+    }
+
     suspend fun getStoreBranchInfo(branchId: String): BranchDto {
         return supabaseClient.postgrest[SupabaseTables.BRANCH].select(
             Columns.raw(
@@ -77,6 +98,7 @@ class BranchRemoteDatasource @Inject constructor(
         longitude: Float = 0f,
         latitude: Float = 0f,
         imageUrl: String? = null,
+        name: String,
         ownerId: String? = LocalUserData.uuid
     ) {
         if (ownerId == null) {
@@ -88,13 +110,15 @@ class BranchRemoteDatasource @Inject constructor(
                 longitude = longitude,
                 latitude = latitude,
                 imageUrl = imageUrl ?: "",
-                ownerId = ownerId
+                ownerId = ownerId,
+                name = name
             )
         )
     }
 
     suspend fun updateBranch(
         branchId: String,
+        newName: String,
         newLongitude: Float,
         newLatitude: Float,
         newImageUrl: String? = null
@@ -105,7 +129,8 @@ class BranchRemoteDatasource @Inject constructor(
                 longitude = newLongitude,
                 latitude = newLatitude,
                 imageUrl = newImageUrl,
-                ownerId = userId
+                ownerId = userId,
+                name = newName
             )
         ) {
             filter {
@@ -154,6 +179,20 @@ class BranchRemoteDatasource @Inject constructor(
         ) {
             filter {
                 PricesDto::branchId eq branchId
+            }
+        }
+    }
+
+    suspend fun deletePrices(
+        branchId: String,
+        priceId: String
+    ) {
+        supabaseClient.postgrest[SupabaseTables.PRICES].delete {
+            filter {
+                and {
+                    PricesDto::branchId eq branchId
+                    PricesDto::id eq priceId
+                }
             }
         }
     }

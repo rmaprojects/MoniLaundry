@@ -9,15 +9,16 @@ import javax.inject.Inject
 
 class CoreBranchRepositoryImpl @Inject constructor(
     private val branchRemoteDatasource: BranchRemoteDatasource
-): CoreBranchRepository {
+) : CoreBranchRepository {
 
     override suspend fun addBranch(
         longitude: Float,
         latitude: Float,
-        imageUrl: String
+        imageUrl: String,
+        name: String
     ): Result<Boolean> {
         try {
-            branchRemoteDatasource.insertNewBranch(longitude, latitude, imageUrl)
+            branchRemoteDatasource.insertNewBranch(longitude, latitude, imageUrl, name)
             return Result.success(true)
         } catch (e: Exception) {
             return Result.failure(e)
@@ -37,10 +38,35 @@ class CoreBranchRepositoryImpl @Inject constructor(
         branchId: String,
         newLongitude: Float,
         newLatitude: Float,
+        newName: String,
         newImageUrl: String?
     ): Result<Boolean> {
         return try {
-            branchRemoteDatasource.updateBranch(branchId, newLongitude, newLatitude, newImageUrl)
+            branchRemoteDatasource.updateBranch(branchId, newName, newLongitude, newLatitude, newImageUrl)
+            Result.success(true)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun getAllBranchWithOrderHistory(
+        orderRangeFrom: String?,
+        orderRangeTo: String?
+    ): Result<List<BranchDto>> {
+        return try {
+            val result = branchRemoteDatasource.getAllBranchWithOrderHistory(
+                orderRangeFrom, orderRangeTo
+            )
+            Result.success(result)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+
+    override suspend fun deleteBranch(branchId: String): Result<Boolean> {
+        return try {
+            branchRemoteDatasource.deleteBranch(branchId)
             Result.success(true)
         } catch (e: Exception) {
             Result.failure(e)
@@ -123,6 +149,15 @@ class CoreBranchRepositoryImpl @Inject constructor(
     ): Result<Boolean> {
         return try {
             branchRemoteDatasource.updateNewPrices(branchId, pricesList)
+            Result.success(true)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun deletePrices(branchId: String, pricesId: String): Result<Boolean> {
+        return try {
+            branchRemoteDatasource.deletePrices(branchId, pricesId)
             Result.success(true)
         } catch (e: Exception) {
             Result.failure(e)

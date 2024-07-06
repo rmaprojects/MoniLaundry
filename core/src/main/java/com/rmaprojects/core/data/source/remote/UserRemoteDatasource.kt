@@ -2,7 +2,9 @@ package com.rmaprojects.core.data.source.remote
 
 import com.rmaprojects.core.common.Roles
 import com.rmaprojects.core.data.source.local.LocalUserData
+import com.rmaprojects.core.data.source.remote.model.EmployeeDetailsDto
 import com.rmaprojects.core.data.source.remote.model.EmployeeDto
+import com.rmaprojects.core.data.source.remote.model.OwnerDetailsDto
 import com.rmaprojects.core.data.source.remote.model.OwnerDto
 import com.rmaprojects.core.data.source.remote.model.UserDto
 import com.rmaprojects.core.data.source.remote.tables.SupabaseTables
@@ -148,12 +150,77 @@ class UserRemoteDatasource @Inject constructor(
 
     suspend fun deleteEmployee(employeeId: String) {
         val employee = getEmployeeLoginInfo(employeeId)
-        supabaseClient.auth.admin.deleteUser(employee.id)
+        if (employee.id != null) supabaseClient.auth.admin.deleteUser(employee.id)
     }
 
     suspend fun deleteAccount() {
         supabaseClient.auth.signOut(SignOutScope.LOCAL)
         supabaseClient.auth.admin.deleteUser(LocalUserData.uuid ?: "")
         LocalUserData.clear()
+    }
+
+    suspend fun updatePassword(employeeId: String? = null, newPassword: String) {
+        val isUpdatingCurrentUser = employeeId == null
+        supabaseClient.auth.updateUser(
+            isUpdatingCurrentUser
+        ) {
+            this.password = newPassword
+        }
+    }
+
+    suspend fun updateOwnerInfo(
+        newUsername: String,
+        ownerData: Roles.Owner,
+        ownerId: String? = LocalUserData.uuid,
+    ) {
+        supabaseClient.postgrest[SupabaseTables.USERS]
+            .update(
+                {
+                    UserDto::username setTo newUsername
+                }
+            ) {
+                filter {
+                    UserDto::id eq ownerId
+                }
+            }
+        supabaseClient.postgrest[SupabaseTables.EMPLOYEE]
+            .update(
+                OwnerDetailsDto(
+                    ownerData.name
+                )
+            ) {
+                filter {
+                    EmployeeDto::id eq ownerId
+                }
+            }
+    }
+
+    suspend fun updateEmployeeInfo(
+        employeeId: String,
+        newUsername: String,
+        newEmployeeData: Roles.Employee
+    ) {
+        supabaseClient.postgrest[SupabaseTables.USERS]
+            .update(
+                {
+                    UserDto::username setTo newUsername
+                }
+            ) {
+                filter {
+                    UserDto::id eq employeeId
+                }
+            }
+        supabaseClient.postgrest[SupabaseTables.EMPLOYEE]
+            .update(
+                EmployeeDetailsDto(
+                    newEmployeeData.fullName,
+                    newEmployeeData.dateOfBirth,
+                    newEmployeeData.livingPlace
+                )
+            ) {
+                filter {
+                    EmployeeDto::id eq employeeId
+                }
+            }
     }
 }

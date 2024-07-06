@@ -14,7 +14,7 @@ data class OwnerDto(
 
 @Serializable
 data class OwnerDetailsDto(
-    @SerialName("id") val id: String,
     @SerialName("full_name") val name: String,
+    @SerialName("id") val id: String? = "",
     @SerialName("created_at") val createdAt: String = "",
 )

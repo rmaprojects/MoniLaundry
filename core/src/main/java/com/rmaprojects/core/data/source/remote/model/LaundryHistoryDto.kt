@@ -24,5 +24,6 @@ data class LaundryHistoryDetailsDto(
     @SerialName("item_id") val itemId: String,
     @SerialName("quantity") val quantity: String,
     @SerialName("total_price") val totalPrice: String,
-    @SerialName("tbl_prices") val priceDetail: PricesDto
+    @SerialName("tbl_prices") val priceDetail: PricesDto,
+    @SerialName("name") val name: String? = null
 )
