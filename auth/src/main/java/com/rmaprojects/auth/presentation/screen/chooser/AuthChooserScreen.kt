@@ -19,7 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.generated.destinations.AuthScreenDestination
+import com.ramcosta.composedestinations.generated.auth.destinations.AuthScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.rmaprojects.auth.navigation.AuthNavigation
 import com.rmaprojects.auth.presentation.components.RoleCard

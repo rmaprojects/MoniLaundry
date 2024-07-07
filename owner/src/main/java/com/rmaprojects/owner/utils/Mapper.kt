@@ -11,9 +11,11 @@ import com.rmaprojects.owner.domain.model.EmployeeData
 
 fun PricesDto.mapToPrice(): PricesData {
     return PricesData(
+        this.id,
+        this.branchId,
         this.itemName,
         this.price,
-        if (this.type == "single") LaundryType.SINGLE else LaundryType.PACKAGE
+        if (this.type == "single") LaundryType.SINGLE else LaundryType.PACKAGE,
     )
 }
 
@@ -21,7 +23,9 @@ fun PricesData.mapToDto(): PricesDto {
     return PricesDto(
         this.itemName,
         this.price,
-        this.laundryType.typeName
+        this.laundryType.typeName,
+        this.branchId,
+        this.id
     )
 }
 

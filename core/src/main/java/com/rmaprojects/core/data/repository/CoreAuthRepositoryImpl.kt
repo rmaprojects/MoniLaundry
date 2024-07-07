@@ -29,7 +29,7 @@ class CoreAuthRepositoryImpl @Inject constructor(
                 }
             } else {
                 userRemoteDatasource.getEmployeeLoginInfo(user.id).let {
-                    userRemoteDatasource.signIn(it.email, password)
+                    userRemoteDatasource.signIn(it.email ?: "", password)
                     LocalUserData.apply {
                         this.role = it.role
                         this.email = it.email
@@ -87,6 +87,38 @@ class CoreAuthRepositoryImpl @Inject constructor(
 
     override suspend fun logOut() {
         userRemoteDatasource.logOut()
+    }
+
+    override suspend fun updateEmployeeInfo(
+        employeeId: String,
+        newUsername: String,
+        newEmployeeData: Roles.Employee
+    ): Result<Boolean> {
+        return try {
+            val isUserExists = userRemoteDatasource.isUserExitsInDatabase(employeeId)
+            if (isUserExists) {
+                userRemoteDatasource.updateEmployeeInfo(employeeId,newUsername, newEmployeeData)
+                Result.success(true)
+            } else {
+                Result.failure(Exception("User is not exists"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun deleteUser(userId: String): Result<Boolean> {
+        return try {
+            val isUserExists = userRemoteDatasource.isUserExitsInDatabase(userId)
+            if (isUserExists) {
+                userRemoteDatasource.deleteAccount(userId)
+                Result.success(true)
+            } else {
+                Result.failure(Exception("User is not exists"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
 

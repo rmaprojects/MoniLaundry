@@ -22,4 +22,14 @@ interface CoreAuthRepository {
     ): Result<Boolean>
 
     suspend fun logOut()
+
+    suspend fun updateEmployeeInfo(
+        employeeId: String,
+        newUsername: String,
+        newEmployeeData: Roles.Employee
+    ): Result<Boolean>
+
+    suspend fun deleteUser(
+        userId: String
+    ): Result<Boolean>
 }

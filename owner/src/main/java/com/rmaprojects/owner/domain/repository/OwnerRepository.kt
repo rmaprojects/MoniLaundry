@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.Flow
 interface OwnerRepository {
     fun addEmployee(
         username: String,
-        email: String,
         password: String,
         employeeData: Roles.Employee
     ): Flow<ResponseState<Boolean>>
@@ -21,11 +20,13 @@ interface OwnerRepository {
         newEmployeeData: Roles.Employee
     ): Flow<ResponseState<Boolean>>
     fun getAllEmployee(): Flow<ResponseState<List<EmployeeData>>>
-    fun getAllEmployeeInfo(): Flow<ResponseState<EmployeeData>>
+    fun getAllEmployeeInBranch(branchId: String): Flow<ResponseState<List<EmployeeData>>>
+    fun getEmployeeInfo(employeeId: String): Flow<ResponseState<EmployeeData>>
     fun deleteEmployee(employeeId: String): Flow<ResponseState<Boolean>>
     fun addBranch(
-        longitude: Float, latitude: Float, imageUrl: String
-    )
+        name: String, longitude: Float, latitude: Float, imageUrl: String
+    ): Flow<ResponseState<Boolean>>
+
     fun getAllBranchInfo(): Flow<ResponseState<List<BranchData>>>
     fun getAllBranchInfoWithLaundryHistory(
         dateFrom: String,
@@ -35,14 +36,17 @@ interface OwnerRepository {
     fun deleteBranch(branchId: String): Flow<ResponseState<Boolean>>
     fun addPrices(
         pricesList: List<PricesData>
-    )
+    ): Flow<ResponseState<Boolean>>
+
     fun updatePrices(
         branchId: String,
         priceList: List<PricesData>
-    )
+    ): Flow<ResponseState<Boolean>>
+
     fun deletePrices(
         branchId: String,
         pricesId: String
-    )
-    fun getAllPrices(): Flow<List<PricesData>>
+    ): Flow<ResponseState<Boolean>>
+
+    fun getAllPrices(branchId: String): Flow<ResponseState<List<PricesData>>>
 }

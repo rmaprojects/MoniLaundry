@@ -10,8 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import com.ramcosta.composedestinations.DestinationsNavHost
-import com.ramcosta.composedestinations.generated.destinations.AuthScreenDestination
-import com.ramcosta.composedestinations.generated.navgraphs.RootNavGraph
+import com.ramcosta.composedestinations.generated.NavGraphs
 import com.rmaprojects.monilaundry.ui.theme.MoniLaundryTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -22,12 +21,20 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MoniLaundryTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                    topBar = {
+
+                    },
+                    bottomBar = {
+
+                    }
+                ) { innerPadding ->
                     Column(
                         modifier = Modifier.padding(innerPadding)
                     ) {
                         DestinationsNavHost(
-                            RootNavGraph,
+                            NavGraphs.main
                         )
                     }
                 }

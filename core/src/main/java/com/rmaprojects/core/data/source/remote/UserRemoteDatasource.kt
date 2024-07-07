@@ -148,8 +148,8 @@ class UserRemoteDatasource @Inject constructor(
         }.countOrNull() == 1L
     }
 
-    suspend fun deleteEmployee(employeeId: String) {
-        val employee = getEmployeeLoginInfo(employeeId)
+    suspend fun deleteAccount(accountId: String) {
+        val employee = getEmployeeLoginInfo(accountId)
         if (employee.id != null) supabaseClient.auth.admin.deleteUser(employee.id)
     }
 

@@ -9,7 +9,12 @@ import com.rmaprojects.core.domain.repository.CoreLaundryRepository
 import com.rmaprojects.owner.domain.model.BranchData
 import com.rmaprojects.owner.domain.model.EmployeeData
 import com.rmaprojects.owner.domain.repository.OwnerRepository
+import com.rmaprojects.owner.utils.mapToBranchData
+import com.rmaprojects.owner.utils.mapToDto
+import com.rmaprojects.owner.utils.mapToEmployeeData
+import com.rmaprojects.owner.utils.mapToPrice
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class OwnerRepositoryImpl @Inject constructor (
@@ -19,70 +24,252 @@ class OwnerRepositoryImpl @Inject constructor (
 ): OwnerRepository {
     override fun addEmployee(
         username: String,
-        email: String,
         password: String,
         employeeData: Roles.Employee
-    ): Flow<ResponseState<Boolean>> {
-        TODO("Not yet implemented")
+    ): Flow<ResponseState<Boolean>> = flow {
+        emit(ResponseState.Loading)
+        try {
+            val result = coreUserRepository.signEmployee(
+                username,
+                password,
+                employeeData
+            )
+            if (result.isSuccess) {
+                emit(ResponseState.Success(true))
+            } else {
+                emit(ResponseState.Error(result.exceptionOrNull()?.message.toString()))
+            }
+        } catch (e: Exception) {
+            emit(ResponseState.Error(e.message.toString()))
+        }
     }
 
     override fun editEmployee(
         employeeId: String,
         newUsername: String,
         newEmployeeData: Roles.Employee
-    ): Flow<ResponseState<Boolean>> {
-        TODO("Not yet implemented")
+    ): Flow<ResponseState<Boolean>> = flow {
+        emit(ResponseState.Loading)
+        try {
+            val result = coreUserRepository.updateEmployeeInfo(
+                employeeId, newUsername, newEmployeeData
+            )
+            if (result.isSuccess) {
+                emit(ResponseState.Success(true))
+            } else {
+                emit(ResponseState.Error(result.exceptionOrNull()?.message.toString()))
+            }
+        } catch (e: Exception) {
+            emit(ResponseState.Error(e.message.toString()))
+        }
     }
 
-    override fun getAllEmployee(): Flow<ResponseState<List<EmployeeData>>> {
-        TODO("Not yet implemented")
+    override fun getAllEmployee(): Flow<ResponseState<List<EmployeeData>>> = flow {
+        emit(ResponseState.Loading)
+        try {
+            val result = coreBranchRepository.getEmployeeList()
+            if (result.isSuccess) {
+                val mappedList = result.getOrElse { emptyList() }.map { it.mapToEmployeeData() }
+                emit(ResponseState.Success(mappedList))
+            } else {
+                emit(ResponseState.Error(result.exceptionOrNull()?.message.toString()))
+            }
+        } catch (e: Exception) {
+            emit(ResponseState.Error(e.message.toString()))
+        }
     }
 
-    override fun getAllEmployeeInfo(): Flow<ResponseState<EmployeeData>> {
-        TODO("Not yet implemented")
+    override fun getAllEmployeeInBranch(
+        branchId: String
+    ): Flow<ResponseState<List<EmployeeData>>> = flow {
+        emit(ResponseState.Loading)
+        try {
+            val result = coreBranchRepository.getBranchEmployeeList(branchId)
+            if (result.isSuccess) {
+                val mappedList = result.getOrElse { emptyList() }.map { it.mapToEmployeeData() }
+                emit(ResponseState.Success(mappedList))
+            } else {
+                emit(ResponseState.Error(result.exceptionOrNull()?.message.toString()))
+            }
+        } catch (e: Exception) {
+            emit(ResponseState.Error(e.message.toString()))
+        }
     }
 
-    override fun deleteEmployee(employeeId: String): Flow<ResponseState<Boolean>> {
-        TODO("Not yet implemented")
+    override fun getEmployeeInfo(
+        employeeId: String
+    ): Flow<ResponseState<EmployeeData>> = flow {
+        emit(ResponseState.Loading)
+        try {
+            val result = coreBranchRepository.getBranchEmployeeDetail(employeeId)
+            if (result.isSuccess) {
+                result.getOrNull()?.let {
+                    emit(ResponseState.Success(it.mapToEmployeeData()))
+                }
+            } else {
+                emit(ResponseState.Error(result.exceptionOrNull()?.message.toString()))
+            }
+        } catch (e: Exception) {
+            emit(ResponseState.Error(e.message.toString()))
+        }
     }
 
-    override fun addBranch(longitude: Float, latitude: Float, imageUrl: String) {
-        TODO("Not yet implemented")
+    override fun deleteEmployee(employeeId: String): Flow<ResponseState<Boolean>> = flow {
+        emit(ResponseState.Loading)
+        try {
+            val result = coreUserRepository.deleteUser(employeeId)
+            if (result.isSuccess) {
+                result.getOrNull()?.let {
+                    emit(ResponseState.Success(true))
+                }
+            } else {
+                emit(ResponseState.Error(result.exceptionOrNull()?.message.toString()))
+            }
+        } catch (e: Exception) {
+            emit(ResponseState.Error(e.message.toString()))
+        }
     }
 
-    override fun getAllBranchInfo(): Flow<ResponseState<List<BranchData>>> {
-        TODO("Not yet implemented")
+    override fun addBranch(name: String, longitude: Float, latitude: Float, imageUrl: String): Flow<ResponseState<Boolean>> = flow {
+        emit(ResponseState.Loading)
+        try {
+            val result = coreBranchRepository.addBranch(
+                longitude, latitude, imageUrl, name
+            )
+            if (result.isSuccess) {
+                result.getOrNull()?.let {
+                    emit(ResponseState.Success(true))
+                }
+            } else {
+                emit(ResponseState.Error(result.exceptionOrNull()?.message.toString()))
+            }
+        } catch (e: Exception) {
+            emit(ResponseState.Error(e.message.toString()))
+        }
+    }
+
+    override fun getAllBranchInfo(): Flow<ResponseState<List<BranchData>>> = flow {
+        emit(ResponseState.Loading)
+        try {
+            val result = coreBranchRepository.getAllBranch()
+            if (result.isSuccess) {
+                val mappedList = result.getOrElse { emptyList() }.map { it.mapToBranchData() }
+                emit(ResponseState.Success(mappedList))
+            } else {
+                emit(ResponseState.Error(result.exceptionOrNull()?.message.toString()))
+            }
+        } catch (e: Exception) {
+            emit(ResponseState.Error(e.message.toString()))
+        }
     }
 
     override fun getAllBranchInfoWithLaundryHistory(
         dateFrom: String,
         dateTo: String
-    ): Flow<ResponseState<List<BranchData>>> {
-        TODO("Not yet implemented")
+    ): Flow<ResponseState<List<BranchData>>> = flow {
+        emit(ResponseState.Loading)
+        try {
+            val result = coreBranchRepository.getAllBranchWithOrderHistory(dateFrom, dateTo)
+            if (result.isSuccess) {
+                val mappedList = result.getOrElse { emptyList() }.map { it.mapToBranchData() }
+                emit(ResponseState.Success(mappedList))
+            } else {
+                emit(ResponseState.Error(result.exceptionOrNull()?.message.toString()))
+            }
+        } catch (e: Exception) {
+            emit(ResponseState.Error(e.message.toString()))
+        }
     }
 
-    override fun getBranchInfo(branchId: String): Flow<ResponseState<BranchData>> {
-        TODO("Not yet implemented")
+    override fun getBranchInfo(branchId: String): Flow<ResponseState<BranchData>> = flow {
+        emit(ResponseState.Loading)
+        try {
+            val result = coreBranchRepository.getBranchDetails(branchId)
+            if (result.isSuccess) {
+                result.getOrNull()?.let {
+                    emit(ResponseState.Success(it.mapToBranchData()))
+                }
+            } else {
+                emit(ResponseState.Error(result.exceptionOrNull()?.message.toString()))
+            }
+        } catch (e: Exception) {
+            emit(ResponseState.Error(e.message.toString()))
+        }
     }
 
-    override fun deleteBranch(branchId: String): Flow<ResponseState<Boolean>> {
-        TODO("Not yet implemented")
+    override fun deleteBranch(branchId: String): Flow<ResponseState<Boolean>> = flow {
+        emit(ResponseState.Loading)
+        try {
+            val result = coreBranchRepository.deleteBranch(branchId)
+            if (result.isSuccess) {
+                emit(ResponseState.Success(true))
+            } else {
+                emit(ResponseState.Error(result.exceptionOrNull()?.message.toString()))
+            }
+        } catch (e: Exception) {
+            emit(ResponseState.Error(e.message.toString()))
+        }
     }
 
-    override fun addPrices(pricesList: List<PricesData>) {
-        TODO("Not yet implemented")
+    override fun addPrices(pricesList: List<PricesData>): Flow<ResponseState<Boolean>> = flow {
+        emit(ResponseState.Loading)
+        try {
+            val mappedPriceList = pricesList.map { it.mapToDto() }
+            val result = coreBranchRepository.addBranchPrices(mappedPriceList)
+            if (result.isSuccess) {
+                emit(ResponseState.Success(true))
+            } else {
+                emit(ResponseState.Error(result.exceptionOrNull()?.message.toString()))
+            }
+        } catch (e: Exception) {
+            emit(ResponseState.Error(e.message.toString()))
+        }
     }
 
-    override fun updatePrices(branchId: String, priceList: List<PricesData>) {
-        TODO("Not yet implemented")
+    override fun updatePrices(branchId: String, priceList: List<PricesData>): Flow<ResponseState<Boolean>> = flow {
+        emit(ResponseState.Loading)
+        try {
+            val mappedPriceList = priceList.map { it.mapToDto() }
+            val result = coreBranchRepository.updateNewPrices(
+                branchId, mappedPriceList
+            )
+            if (result.isSuccess) {
+                emit(ResponseState.Success(true))
+            } else {
+                emit(ResponseState.Error(result.exceptionOrNull()?.message.toString()))
+            }
+        } catch (e: Exception) {
+            emit(ResponseState.Error(e.message.toString()))
+        }
     }
 
-    override fun deletePrices(branchId: String, pricesId: String) {
-        TODO("Not yet implemented")
+    override fun deletePrices(branchId: String, pricesId: String): Flow<ResponseState<Boolean>> = flow {
+        emit(ResponseState.Loading)
+        try {
+            val result = coreBranchRepository.deletePrices(branchId, pricesId)
+            if (result.isSuccess) {
+                emit(ResponseState.Success(true))
+            } else {
+                emit(ResponseState.Error(result.exceptionOrNull()?.message.toString()))
+            }
+        } catch (e: Exception) {
+            emit(ResponseState.Error(e.message.toString()))
+        }
     }
 
-    override fun getAllPrices(): Flow<List<PricesData>> {
-        TODO("Not yet implemented")
+    override fun getAllPrices(branchId: String): Flow<ResponseState<List<PricesData>>> = flow {
+        emit(ResponseState.Loading)
+        try {
+            val result = coreBranchRepository.getAllBranchPrices(branchId)
+            if (result.isSuccess) {
+                val mappedPriceData = result.getOrElse { emptyList() }.map { it.mapToPrice() }
+                emit(ResponseState.Success(mappedPriceData))
+            } else {
+                emit(ResponseState.Error(result.exceptionOrNull()?.message.toString()))
+            }
+        } catch (e: Exception) {
+            emit(ResponseState.Error(e.message.toString()))
+        }
     }
 
 }

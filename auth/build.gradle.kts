@@ -50,3 +50,12 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }
+
+ksp {
+    // used on some of the generated code, including default package name
+    arg("compose-destinations.moduleName", "auth")
+    // and if you want to generate mermaid graph files for this module's graphs:
+    // (ideally use the same path for all modules, so that navigation in the html works well)
+    arg("compose-destinations.htmlMermaidGraph", "$rootDir//navigation-docs")
+    arg("compose-destinations.mermaidGraph", "$rootDir/navigation-docs")
+}
