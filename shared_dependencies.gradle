@@ -12,6 +12,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.material.icons.extended)
 
     //ApiResponseWrapper
     implementation(libs.apiresponsewrapper)
@@ -23,4 +24,8 @@ dependencies {
     implementation(libs.compose.destinations.core)
     ksp(libs.compose.destinations.ksp)
     implementation(libs.compose.destinations.bottomsheet)
+
+    //Kotpref
+    implementation(libs.kotpref)
+    implementation(libs.kotpref.initializer)
 }

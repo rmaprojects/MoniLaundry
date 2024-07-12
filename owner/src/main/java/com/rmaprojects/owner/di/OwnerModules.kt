@@ -5,6 +5,7 @@ import com.rmaprojects.core.domain.repository.CoreBranchRepository
 import com.rmaprojects.core.domain.repository.CoreLaundryRepository
 import com.rmaprojects.owner.data.repository.OwnerRepositoryImpl
 import com.rmaprojects.owner.domain.repository.OwnerRepository
+import com.rmaprojects.owner.domain.usecases.OwnerUseCaseInteractor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,11 +19,18 @@ object OwnerModules {
     @Provides
     @Singleton
     fun provideOwnerRepository(
-        coreLaundryRepository: CoreLaundryRepository,
         coreAuthRepository: CoreAuthRepository,
         coreBranchRepository: CoreBranchRepository
     ): OwnerRepository {
-        return OwnerRepositoryImpl(coreLaundryRepository, coreBranchRepository, coreAuthRepository)
+        return OwnerRepositoryImpl(coreBranchRepository, coreAuthRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideOwnerUseCases(
+        ownerRepository: OwnerRepository
+    ): OwnerUseCaseInteractor {
+       return OwnerUseCaseInteractor(ownerRepository)
     }
 
 }

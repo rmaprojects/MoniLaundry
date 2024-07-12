@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.kotlin.ksp)
+    alias(libs.plugins.compose.compiler)
     kotlin("plugin.serialization") version "2.0.0"
 }
 
@@ -61,10 +62,6 @@ dependencies {
 
     //Ktor
     implementation(libs.ktor.client.okhttp)
-
-    //Kotpref
-    implementation(libs.kotpref)
-    implementation(libs.kotpref.initializer)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

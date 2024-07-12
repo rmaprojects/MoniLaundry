@@ -1,6 +1,6 @@
 package com.rmaprojects.owner.utils
 
-import com.rmaprojects.core.common.LaundryType
+import com.rmaprojects.core.common.types.LaundryType
 import com.rmaprojects.core.data.source.remote.model.BranchDto
 import com.rmaprojects.core.data.source.remote.model.EmployeeDetailsDto
 import com.rmaprojects.core.data.source.remote.model.EmployeeDto

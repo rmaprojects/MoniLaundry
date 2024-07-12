@@ -1,6 +1,6 @@
 package com.rmaprojects.core.domain.repository
 
-import com.rmaprojects.core.common.LaundryStatus
+import com.rmaprojects.core.common.types.LaundryStatus
 import com.rmaprojects.core.data.source.remote.model.LaundryHistoryDetailsDto
 import com.rmaprojects.core.data.source.remote.model.LaundryHistoryDto
 

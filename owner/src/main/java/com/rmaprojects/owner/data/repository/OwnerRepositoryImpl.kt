@@ -1,7 +1,7 @@
 package com.rmaprojects.owner.data.repository
 
 import com.rmaprojects.apirequeststate.ResponseState
-import com.rmaprojects.core.common.Roles
+import com.rmaprojects.core.common.types.Roles
 import com.rmaprojects.core.domain.model.PricesData
 import com.rmaprojects.core.domain.repository.CoreAuthRepository
 import com.rmaprojects.core.domain.repository.CoreBranchRepository
@@ -17,11 +17,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class OwnerRepositoryImpl @Inject constructor (
-    private val coreLaundryRepository: CoreLaundryRepository,
+class OwnerRepositoryImpl @Inject constructor(
     private val coreBranchRepository: CoreBranchRepository,
-    private val coreUserRepository: CoreAuthRepository
-): OwnerRepository {
+    private val coreUserRepository: CoreAuthRepository,
+) : OwnerRepository {
+
     override fun addEmployee(
         username: String,
         password: String,
@@ -130,7 +130,31 @@ class OwnerRepositoryImpl @Inject constructor (
         }
     }
 
-    override fun addBranch(name: String, longitude: Float, latitude: Float, imageUrl: String): Flow<ResponseState<Boolean>> = flow {
+    override fun editEmployeeBranch(
+        employeeId: String,
+        branchId: String
+    ): Flow<ResponseState<Boolean>> = flow {
+        emit(ResponseState.Loading)
+        try {
+            val result = coreBranchRepository.editBranchEmployee(employeeId, branchId)
+            if (result.isSuccess) {
+                result.getOrNull()?.let {
+                    emit(ResponseState.Success(true))
+                }
+            } else {
+                emit(ResponseState.Error(result.exceptionOrNull()?.message.toString()))
+            }
+        } catch (e: Exception) {
+            emit(ResponseState.Error(e.message.toString()))
+        }
+    }
+
+    override fun addBranch(
+        name: String,
+        longitude: Float,
+        latitude: Float,
+        imageUrl: String
+    ): Flow<ResponseState<Boolean>> = flow {
         emit(ResponseState.Loading)
         try {
             val result = coreBranchRepository.addBranch(
@@ -164,8 +188,8 @@ class OwnerRepositoryImpl @Inject constructor (
     }
 
     override fun getAllBranchInfoWithLaundryHistory(
-        dateFrom: String,
-        dateTo: String
+        dateFrom: String?,
+        dateTo: String?
     ): Flow<ResponseState<List<BranchData>>> = flow {
         emit(ResponseState.Loading)
         try {
@@ -188,6 +212,34 @@ class OwnerRepositoryImpl @Inject constructor (
             if (result.isSuccess) {
                 result.getOrNull()?.let {
                     emit(ResponseState.Success(it.mapToBranchData()))
+                }
+            } else {
+                emit(ResponseState.Error(result.exceptionOrNull()?.message.toString()))
+            }
+        } catch (e: Exception) {
+            emit(ResponseState.Error(e.message.toString()))
+        }
+    }
+
+    override fun editBranchInfo(
+        branchId: String,
+        newBranchName: String,
+        newLongitude: Float,
+        newLatitude: Float,
+        newImageUrl: String?
+    ): Flow<ResponseState<Boolean>> = flow {
+        emit(ResponseState.Loading)
+        try {
+            val result = coreBranchRepository.editBranch(
+                branchId,
+                newLongitude,
+                newLatitude,
+                newBranchName,
+                newImageUrl
+            )
+            if (result.isSuccess) {
+                result.getOrNull()?.let {
+                    emit(ResponseState.Success(true))
                 }
             } else {
                 emit(ResponseState.Error(result.exceptionOrNull()?.message.toString()))
@@ -226,7 +278,10 @@ class OwnerRepositoryImpl @Inject constructor (
         }
     }
 
-    override fun updatePrices(branchId: String, priceList: List<PricesData>): Flow<ResponseState<Boolean>> = flow {
+    override fun updatePrices(
+        branchId: String,
+        priceList: List<PricesData>
+    ): Flow<ResponseState<Boolean>> = flow {
         emit(ResponseState.Loading)
         try {
             val mappedPriceList = priceList.map { it.mapToDto() }
@@ -243,19 +298,20 @@ class OwnerRepositoryImpl @Inject constructor (
         }
     }
 
-    override fun deletePrices(branchId: String, pricesId: String): Flow<ResponseState<Boolean>> = flow {
-        emit(ResponseState.Loading)
-        try {
-            val result = coreBranchRepository.deletePrices(branchId, pricesId)
-            if (result.isSuccess) {
-                emit(ResponseState.Success(true))
-            } else {
-                emit(ResponseState.Error(result.exceptionOrNull()?.message.toString()))
+    override fun deletePrices(branchId: String, pricesId: Int): Flow<ResponseState<Boolean>> =
+        flow {
+            emit(ResponseState.Loading)
+            try {
+                val result = coreBranchRepository.deletePrices(branchId, pricesId)
+                if (result.isSuccess) {
+                    emit(ResponseState.Success(true))
+                } else {
+                    emit(ResponseState.Error(result.exceptionOrNull()?.message.toString()))
+                }
+            } catch (e: Exception) {
+                emit(ResponseState.Error(e.message.toString()))
             }
-        } catch (e: Exception) {
-            emit(ResponseState.Error(e.message.toString()))
         }
-    }
 
     override fun getAllPrices(branchId: String): Flow<ResponseState<List<PricesData>>> = flow {
         emit(ResponseState.Loading)

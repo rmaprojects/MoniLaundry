@@ -33,8 +33,10 @@ class BranchRemoteDatasource @Inject constructor(
                 ),
                 request = if (orderRangeTo.isNullOrEmpty() || orderRangeFrom.isNullOrEmpty()) ({}) else ({
                     filter {
-                        gte("tbl_laundry_history.created_at", orderRangeFrom)
-                        lte("tbl_laundry_history.created_at", orderRangeTo)
+                        and {
+                            gte("tbl_laundry_history.created_at", orderRangeFrom)
+                            lte("tbl_laundry_history.created_at", orderRangeTo)
+                        }
                     }
                 })
             ).decodeList()
@@ -185,7 +187,7 @@ class BranchRemoteDatasource @Inject constructor(
 
     suspend fun deletePrices(
         branchId: String,
-        priceId: String
+        priceId: Int
     ) {
         supabaseClient.postgrest[SupabaseTables.PRICES].delete {
             filter {

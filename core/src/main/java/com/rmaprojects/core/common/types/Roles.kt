@@ -1,4 +1,4 @@
-package com.rmaprojects.core.common
+package com.rmaprojects.core.common.types
 
 sealed class Roles {
     data class Employee(

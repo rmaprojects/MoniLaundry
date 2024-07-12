@@ -28,8 +28,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.rmaprojects.auth.common.AuthState
 import com.rmaprojects.auth.presentation.components.RegisterComponent
 import com.rmaprojects.auth.presentation.components.SignInComponent
+import com.rmaprojects.core.data.source.local.LocalUserData
 import kotlinx.coroutines.launch
 import com.rmaprojects.core.R as CoreRes
 
@@ -137,14 +139,20 @@ fun AuthScreenContent(
                     SignInComponent(
                         isNotLoading = !isLoading,
                         onSignInButtonClick = { username, password ->
-                            viewModel.signInUser(username, password)
+                            viewModel.signInUser(username, password).let {
+                                AuthState.mLoggedIn.value = true
+                                AuthState.mLoggedRole.value = LocalUserData.role
+                            }
                         }
                     )
                 } else {
                     RegisterComponent(
                         isNotLoading = !isLoading,
                         onSignUpButtonClick = { fullName, username, password ->
-                            viewModel.signUpUser(username, fullName, password)
+                            viewModel.signUpUser(username, fullName, password).let {
+                                AuthState.mLoggedIn.value = true
+                                AuthState.mLoggedRole.value = LocalUserData.role
+                            }
                         }
                     )
                 }

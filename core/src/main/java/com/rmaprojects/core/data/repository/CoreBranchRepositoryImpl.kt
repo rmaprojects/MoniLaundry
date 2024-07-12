@@ -155,7 +155,7 @@ class CoreBranchRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun deletePrices(branchId: String, pricesId: String): Result<Boolean> {
+    override suspend fun deletePrices(branchId: String, pricesId: Int): Result<Boolean> {
         return try {
             branchRemoteDatasource.deletePrices(branchId, pricesId)
             Result.success(true)

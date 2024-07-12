@@ -1,6 +1,6 @@
 package com.rmaprojects.core.domain.repository
 
-import com.rmaprojects.core.common.Roles
+import com.rmaprojects.core.common.types.Roles
 
 interface CoreAuthRepository {
 

@@ -15,8 +15,8 @@ interface CoreBranchRepository {
         newLongitude: Float,
         newLatitude: Float,
         newName: String,
-        newImageUrl: String?,
-        ): Result<Boolean>
+        newImageUrl: String?
+    ): Result<Boolean>
 
     suspend fun getAllBranchWithOrderHistory(
         orderRangeFrom: String? = "",
@@ -32,5 +32,5 @@ interface CoreBranchRepository {
     suspend fun getAllBranchPrices(branchId: String): Result<List<PricesDto>>
     suspend fun addBranchPrices(pricesList: List<PricesDto>): Result<Boolean>
     suspend fun updateNewPrices(branchId: String, pricesList: List<PricesDto>): Result<Boolean>
-    suspend fun deletePrices(branchId: String, pricesId: String): Result<Boolean>
+    suspend fun deletePrices(branchId: String, pricesId: Int): Result<Boolean>
 }

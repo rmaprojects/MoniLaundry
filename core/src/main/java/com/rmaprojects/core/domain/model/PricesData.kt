@@ -1,6 +1,6 @@
 package com.rmaprojects.core.domain.model
 
-import com.rmaprojects.core.common.LaundryType
+import com.rmaprojects.core.common.types.LaundryType
 
 data class PricesData(
     val id: String?,
