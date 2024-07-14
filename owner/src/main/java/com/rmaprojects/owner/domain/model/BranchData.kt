@@ -6,5 +6,5 @@ data class BranchData(
     val employeeList: List<EmployeeData>? = emptyList(),
     val longitude: Float? = null,
     val latitude: Float? = null,
-    val incomeTotal: Int? = null
+    val totalIncome: Int
 )

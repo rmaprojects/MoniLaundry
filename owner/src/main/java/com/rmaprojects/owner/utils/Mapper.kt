@@ -1,9 +1,8 @@
 package com.rmaprojects.owner.utils
 
-import com.rmaprojects.core.common.types.LaundryType
+import com.rmaprojects.core.common.LaundryType
 import com.rmaprojects.core.data.source.remote.model.BranchDto
 import com.rmaprojects.core.data.source.remote.model.EmployeeDetailsDto
-import com.rmaprojects.core.data.source.remote.model.EmployeeDto
 import com.rmaprojects.core.data.source.remote.model.PricesDto
 import com.rmaprojects.core.domain.model.PricesData
 import com.rmaprojects.owner.domain.model.BranchData
@@ -29,28 +28,19 @@ fun PricesData.mapToDto(): PricesDto {
     )
 }
 
-fun EmployeeDto.mapToEmployeeData(): EmployeeData {
-    return EmployeeData(
-        this.employeeDetails.fullName,
-        this.employeeDetails.createdAt,
-        this.employeeDetails.dateOfBirth,
-        this.employeeDetails.livingPlace,
-        username = this.username,
-        this.employeeDetails.branchId
-    )
-}
-
 fun EmployeeDetailsDto.mapToEmployeeData(): EmployeeData {
     return EmployeeData(
         this.fullName,
         this.createdAt,
         this.dateOfBirth,
         this.livingPlace,
-        branchId = this.branchId
+        branchId = this.branchId,
+        branchName = this.branchDetail?.name
     )
 }
 
-fun BranchDto.mapToBranchData(totalIncome: Int? = null): BranchData {
+fun BranchDto.mapToBranchData(): BranchData {
+    val totalIncome = this.laundryHistory?.sumOf { it.details!!.sumOf { it.totalPrice } } ?: 0
     return BranchData(
         this.name,
         this.id,
@@ -60,3 +50,4 @@ fun BranchDto.mapToBranchData(totalIncome: Int? = null): BranchData {
         totalIncome
     )
 }
+

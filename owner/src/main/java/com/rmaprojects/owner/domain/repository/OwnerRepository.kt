@@ -1,7 +1,7 @@
 package com.rmaprojects.owner.domain.repository
 
 import com.rmaprojects.apirequeststate.ResponseState
-import com.rmaprojects.core.common.types.Roles
+import com.rmaprojects.core.common.Roles
 import com.rmaprojects.core.domain.model.PricesData
 import com.rmaprojects.owner.domain.model.BranchData
 import com.rmaprojects.owner.domain.model.EmployeeData

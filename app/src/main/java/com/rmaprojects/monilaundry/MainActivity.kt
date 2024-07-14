@@ -44,9 +44,6 @@ class MainActivity : ComponentActivity() {
 
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
-                    topBar = {
-
-                    },
                     bottomBar = {
                         if (bottomBarList.any { it.direction == currentDestination }) {
                             BottomBar(
@@ -61,6 +58,7 @@ class MainActivity : ComponentActivity() {
                     ) {
                         DestinationsNavHost(
                             NavGraphs.main,
+                            navController = navController,
                             startRoute = if (!AuthState.isLoggedIn.value) {
                                 AuthScreenDestination
                             } else {

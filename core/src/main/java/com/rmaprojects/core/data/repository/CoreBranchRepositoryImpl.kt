@@ -5,6 +5,7 @@ import com.rmaprojects.core.data.source.remote.model.BranchDto
 import com.rmaprojects.core.data.source.remote.model.EmployeeDetailsDto
 import com.rmaprojects.core.data.source.remote.model.PricesDto
 import com.rmaprojects.core.domain.repository.CoreBranchRepository
+import com.rmaprojects.core.utils.convertDateTimeToDateString
 import javax.inject.Inject
 
 class CoreBranchRepositoryImpl @Inject constructor(
@@ -54,9 +55,8 @@ class CoreBranchRepositoryImpl @Inject constructor(
         orderRangeTo: String?
     ): Result<List<BranchDto>> {
         return try {
-            val result = branchRemoteDatasource.getAllBranchWithOrderHistory(
-                orderRangeFrom, orderRangeTo
-            )
+            val result =
+                branchRemoteDatasource.getAllBranchWithOrderHistory(orderRangeFrom, orderRangeTo)
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)

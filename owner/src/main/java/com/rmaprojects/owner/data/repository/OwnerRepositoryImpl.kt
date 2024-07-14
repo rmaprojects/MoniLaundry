@@ -1,11 +1,10 @@
 package com.rmaprojects.owner.data.repository
 
 import com.rmaprojects.apirequeststate.ResponseState
-import com.rmaprojects.core.common.types.Roles
+import com.rmaprojects.core.common.Roles
 import com.rmaprojects.core.domain.model.PricesData
 import com.rmaprojects.core.domain.repository.CoreAuthRepository
 import com.rmaprojects.core.domain.repository.CoreBranchRepository
-import com.rmaprojects.core.domain.repository.CoreLaundryRepository
 import com.rmaprojects.owner.domain.model.BranchData
 import com.rmaprojects.owner.domain.model.EmployeeData
 import com.rmaprojects.owner.domain.repository.OwnerRepository
@@ -196,6 +195,7 @@ class OwnerRepositoryImpl @Inject constructor(
             val result = coreBranchRepository.getAllBranchWithOrderHistory(dateFrom, dateTo)
             if (result.isSuccess) {
                 val mappedList = result.getOrElse { emptyList() }.map { it.mapToBranchData() }
+
                 emit(ResponseState.Success(mappedList))
             } else {
                 emit(ResponseState.Error(result.exceptionOrNull()?.message.toString()))

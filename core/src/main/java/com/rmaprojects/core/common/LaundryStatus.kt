@@ -1,4 +1,4 @@
-package com.rmaprojects.core.common.types
+package com.rmaprojects.core.common
 
 enum class LaundryStatus(val statusText: String) {
     CANCELED("canceled"),

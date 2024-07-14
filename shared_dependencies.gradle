@@ -28,4 +28,7 @@ dependencies {
     //Kotpref
     implementation(libs.kotpref)
     implementation(libs.kotpref.initializer)
+
+    //Coil
+    implementation(libs.coil.compose)
 }

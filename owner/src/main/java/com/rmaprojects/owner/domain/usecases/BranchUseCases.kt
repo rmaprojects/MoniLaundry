@@ -9,8 +9,14 @@ import kotlinx.coroutines.flow.Flow
 
 class BranchUseCases(private val repository: OwnerRepository) {
 
-    fun getAllBranch(): Flow<ResponseState<List<BranchData>>> {
-        return repository.getAllBranchInfo()
+    fun getAllBranch(
+        dateFrom: String? = "",
+        dateTo: String? = ""
+    ): Flow<ResponseState<List<BranchData>>> {
+        return if (dateFrom.isNullOrEmpty() && dateTo.isNullOrEmpty()) repository.getAllBranchInfo() else repository.getAllBranchInfoWithLaundryHistory(
+            dateFrom,
+            dateTo
+        )
     }
 
     fun addBranch(
@@ -33,7 +39,13 @@ class BranchUseCases(private val repository: OwnerRepository) {
         newLatitude: Float,
         newImageUrl: String
     ): Flow<ResponseState<Boolean>> {
-        return repository.editBranchInfo(branchId, newBranchName, newLongitude, newLatitude, newImageUrl)
+        return repository.editBranchInfo(
+            branchId,
+            newBranchName,
+            newLongitude,
+            newLatitude,
+            newImageUrl
+        )
     }
 
     fun getLaundryPricesFromBranch(branchId: String): Flow<ResponseState<List<PricesData>>> {

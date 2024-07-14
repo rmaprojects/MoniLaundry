@@ -1,7 +1,7 @@
 package com.rmaprojects.owner.domain.usecases
 
 import com.rmaprojects.apirequeststate.ResponseState
-import com.rmaprojects.core.common.types.Roles
+import com.rmaprojects.core.common.Roles
 import com.rmaprojects.owner.domain.model.EmployeeData
 import com.rmaprojects.owner.domain.repository.OwnerRepository
 import kotlinx.coroutines.flow.Flow
@@ -20,11 +20,21 @@ class EmployeeUseCases(val repository: OwnerRepository) {
         return repository.addEmployee(username, password, employee)
     }
 
+    fun editEmployee(
+        username: String,
+        password: String,
+        employee: Roles.Employee
+    ): Flow<ResponseState<Boolean>> {
+        return repository.editEmployee(username, password, employee)
+    }
+
     fun deleteEmployee(
         employeeId: String
     ): Flow<ResponseState<Boolean>> {
         return repository.deleteEmployee(employeeId)
     }
+
+
 
     fun getEmployeeInfo(
         employeeId: String

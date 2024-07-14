@@ -6,8 +6,6 @@ import javax.inject.Inject
 class OwnerUseCaseInteractor @Inject constructor(
     private val repository: OwnerRepository
 ): OwnerUseCases {
-    override val countMonthIncomeUseCase: CountMonthIncomeUseCase
-        get() = CountMonthIncomeUseCase()
     override val branchUseCases: BranchUseCases
         get() = BranchUseCases(repository)
     override val employeeUseCases: EmployeeUseCases

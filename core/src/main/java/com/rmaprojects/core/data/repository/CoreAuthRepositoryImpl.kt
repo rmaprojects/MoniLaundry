@@ -1,6 +1,6 @@
 package com.rmaprojects.core.data.repository
 
-import com.rmaprojects.core.common.types.Roles
+import com.rmaprojects.core.common.Roles
 import com.rmaprojects.core.data.source.local.LocalUserData
 import com.rmaprojects.core.data.source.remote.UserRemoteDatasource
 import com.rmaprojects.core.domain.repository.CoreAuthRepository
