@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="status_finished">#93d5aa</color>
+    <color name="status_process">#b2c5ff</color>
+    <color name="status_canceled">#ffb4ab</color>
+</resources>

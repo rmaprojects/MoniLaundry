@@ -1,4 +1,4 @@
-package com.rmaprojects.owner.presentation.screens.details.branch.prices
+package com.rmaprojects.owner.presentation.screens.prices
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.runtime.Composable

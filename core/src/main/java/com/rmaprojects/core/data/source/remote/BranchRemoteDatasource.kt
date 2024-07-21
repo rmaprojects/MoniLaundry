@@ -46,7 +46,7 @@ class BranchRemoteDatasource @Inject constructor(
         return supabaseClient.postgrest[SupabaseTables.BRANCH].select(
             Columns.raw(
                 """
-                    *, tbl_employee(*)
+                    *, tbl_employee(*), tbl_prices(*)
                 """.trimIndent()
             )
         ) {
@@ -102,12 +102,12 @@ class BranchRemoteDatasource @Inject constructor(
         imageUrl: String? = null,
         name: String,
         ownerId: String? = LocalUserData.uuid
-    ) {
+    ): BranchDto {
         if (ownerId == null) {
             throw Exception("You're signed out, please login")
         }
 
-        supabaseClient.postgrest[SupabaseTables.BRANCH].insert(
+        return supabaseClient.postgrest[SupabaseTables.BRANCH].insert(
             BranchDto(
                 longitude = longitude,
                 latitude = latitude,
@@ -115,7 +115,7 @@ class BranchRemoteDatasource @Inject constructor(
                 ownerId = ownerId,
                 name = name
             )
-        )
+        ).decodeSingle()
     }
 
     suspend fun updateBranch(

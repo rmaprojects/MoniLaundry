@@ -15,17 +15,18 @@ class EmployeeUseCases(val repository: OwnerRepository) {
     fun addEmployee(
         username: String,
         password: String,
+        branchId: String,
         employee: Roles.Employee
     ): Flow<ResponseState<Boolean>> {
-        return repository.addEmployee(username, password, employee)
+        return repository.addEmployee(username, password, branchId, employee)
     }
 
     fun editEmployee(
+        employeeId: String,
         username: String,
-        password: String,
         employee: Roles.Employee
     ): Flow<ResponseState<Boolean>> {
-        return repository.editEmployee(username, password, employee)
+        return repository.editEmployee(employeeId, username, employee)
     }
 
     fun deleteEmployee(
@@ -33,7 +34,6 @@ class EmployeeUseCases(val repository: OwnerRepository) {
     ): Flow<ResponseState<Boolean>> {
         return repository.deleteEmployee(employeeId)
     }
-
 
 
     fun getEmployeeInfo(

@@ -23,9 +23,10 @@ class BranchUseCases(private val repository: OwnerRepository) {
         name: String,
         longitude: Float,
         latitude: Float,
-        imageUrl: String? = ""
+        imageUrl: String? = "",
+        employeeId: String? = null
     ): Flow<ResponseState<Boolean>> {
-        return repository.addBranch(name, longitude, latitude, imageUrl ?: "")
+        return repository.addBranch(name, longitude, latitude, imageUrl ?: "", employeeId)
     }
 
     fun deleteBranch(branchId: String): Flow<ResponseState<Boolean>> {
@@ -46,6 +47,10 @@ class BranchUseCases(private val repository: OwnerRepository) {
             newLatitude,
             newImageUrl
         )
+    }
+
+    fun getBranchInfo(branchId: String): Flow<ResponseState<BranchData>> {
+        return repository.getBranchInfo(branchId)
     }
 
     fun getLaundryPricesFromBranch(branchId: String): Flow<ResponseState<List<PricesData>>> {

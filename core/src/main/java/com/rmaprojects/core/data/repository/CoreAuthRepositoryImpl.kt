@@ -4,6 +4,7 @@ import com.rmaprojects.core.common.Roles
 import com.rmaprojects.core.data.source.local.LocalUserData
 import com.rmaprojects.core.data.source.remote.UserRemoteDatasource
 import com.rmaprojects.core.domain.repository.CoreAuthRepository
+import io.github.jan.supabase.gotrue.user.UserInfo
 import io.ktor.http.HttpStatusCode
 import javax.inject.Inject
 import kotlin.random.Random
@@ -80,9 +81,9 @@ class CoreAuthRepositoryImpl @Inject constructor(
         username: String,
         password: String,
         employee: Roles.Employee
-    ): Result<Boolean> {
+    ): Result<String> {
         val status = userRemoteDatasource.signEmployee(username, generateRandomEmails(), password, employee)
-        return Result.success(status == HttpStatusCode.OK)
+        return Result.success(status.id)
     }
 
     override suspend fun logOut() {

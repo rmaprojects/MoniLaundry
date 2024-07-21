@@ -5,7 +5,6 @@ import com.rmaprojects.core.data.source.remote.model.BranchDto
 import com.rmaprojects.core.data.source.remote.model.EmployeeDetailsDto
 import com.rmaprojects.core.data.source.remote.model.PricesDto
 import com.rmaprojects.core.domain.repository.CoreBranchRepository
-import com.rmaprojects.core.utils.convertDateTimeToDateString
 import javax.inject.Inject
 
 class CoreBranchRepositoryImpl @Inject constructor(
@@ -17,10 +16,10 @@ class CoreBranchRepositoryImpl @Inject constructor(
         latitude: Float,
         imageUrl: String,
         name: String
-    ): Result<Boolean> {
+    ): Result<String> {
         try {
-            branchRemoteDatasource.insertNewBranch(longitude, latitude, imageUrl, name)
-            return Result.success(true)
+            val result = branchRemoteDatasource.insertNewBranch(longitude, latitude, imageUrl, name)
+            return Result.success(result.id)
         } catch (e: Exception) {
             return Result.failure(e)
         }

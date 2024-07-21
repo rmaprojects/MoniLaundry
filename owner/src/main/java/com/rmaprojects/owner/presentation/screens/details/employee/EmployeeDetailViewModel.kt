@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
@@ -60,25 +61,35 @@ class EmployeeDetailViewModel @Inject constructor(
     fun addEmployee(
         username: String,
         password: String,
+        branchId: String,
         employeeData: Roles.Employee
     ) {
         resetAllState()
         viewModelScope.launch {
             _employeeMutationState.emitAll(
-                ownerUseCases.employeeUseCases.addEmployee(username, password, employeeData)
+                ownerUseCases.employeeUseCases.addEmployee(
+                    username,
+                    password,
+                    branchId,
+                    employeeData
+                )
+
             )
         }
     }
 
     fun editEmployee(
         username: String,
-        password: String,
         employeeData: Roles.Employee
     ) {
         resetAllState()
         viewModelScope.launch {
             _employeeMutationState.emitAll(
-                ownerUseCases.employeeUseCases.editEmployee(username, password, employeeData)
+                ownerUseCases.employeeUseCases.editEmployee(
+                    navArgs.employeeId ?: return@launch,
+                    username,
+                    employeeData
+                )
             )
         }
     }
@@ -89,6 +100,19 @@ class EmployeeDetailViewModel @Inject constructor(
             _employeeMutationState.emitAll(
                 ownerUseCases.employeeUseCases.deleteEmployee(navArgs.employeeId ?: return@launch)
             )
+        }
+    }
+
+    fun assignEmployeeBranch(
+        branchId: String,
+        employeeId: String = navArgs.employeeId ?: ""
+    ) {
+        viewModelScope.launch {
+            ownerUseCases.employeeUseCases.assignEmployeeBranch(employeeId, branchId).collect()
+                .let {
+                    resetAllState()
+                    retrieveEmployeeDetail()
+                }
         }
     }
 

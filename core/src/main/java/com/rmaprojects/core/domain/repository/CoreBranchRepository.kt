@@ -8,7 +8,7 @@ interface CoreBranchRepository {
     suspend fun getAllBranch(): Result<List<BranchDto>>
     suspend fun addBranch(
         longitude: Float, latitude: Float, imageUrl: String, name: String
-    ): Result<Boolean>
+    ): Result<String>
 
     suspend fun editBranch(
         branchId: String,

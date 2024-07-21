@@ -9,6 +9,7 @@ import com.rmaprojects.core.data.source.remote.model.OwnerDto
 import com.rmaprojects.core.data.source.remote.model.UserDto
 import com.rmaprojects.core.data.source.remote.tables.SupabaseTables
 import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.annotations.SupabaseInternal
 import io.github.jan.supabase.gotrue.SignOutScope
 import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.gotrue.providers.builtin.Email
@@ -16,7 +17,9 @@ import io.github.jan.supabase.gotrue.user.UserInfo
 import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.postgrest.query.Count
+import io.github.jan.supabase.safeBody
 import io.ktor.client.HttpClient
+import io.ktor.client.call.body
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.request.url
@@ -37,7 +40,7 @@ class UserRemoteDatasource @Inject constructor(
         email: String,
         password: String,
         employeeData: Roles.Employee
-    ): HttpStatusCode {
+    ): UserInfo {
         val result = ktorClient.post {
             url("auth/v1/signup")
             contentType(ContentType.Application.Json)
@@ -58,7 +61,7 @@ class UserRemoteDatasource @Inject constructor(
             )
         }
 
-        return result.status
+        return result.body<UserInfo>()
     }
 
     suspend fun signUpOwner(

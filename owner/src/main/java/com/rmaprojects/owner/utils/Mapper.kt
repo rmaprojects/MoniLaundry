@@ -30,6 +30,7 @@ fun PricesData.mapToDto(): PricesDto {
 
 fun EmployeeDetailsDto.mapToEmployeeData(): EmployeeData {
     return EmployeeData(
+        this.id,
         this.fullName,
         this.createdAt,
         this.dateOfBirth,
@@ -45,9 +46,11 @@ fun BranchDto.mapToBranchData(): BranchData {
         this.name,
         this.id,
         this.employees?.map { it.mapToEmployeeData() },
-        this.longitude,
-        this.latitude,
-        totalIncome
+        this.pricesList?.map { it.mapToPrice() },
+        longitude = this.longitude,
+        latitude = this.latitude,
+        totalIncome = totalIncome,
+        imageUrl = this.imageUrl,
     )
 }
 

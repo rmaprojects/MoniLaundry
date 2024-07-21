@@ -7,8 +7,12 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.navigation.ModalBottomSheetLayout
+import androidx.compose.material.navigation.rememberBottomSheetNavigator
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.generated.NavGraphs
@@ -36,39 +40,47 @@ class MainActivity : ComponentActivity() {
 
                 val navController = rememberNavController()
 
+                val bottomSheetNavigator = rememberBottomSheetNavigator()
+                navController.navigatorProvider.addNavigator(bottomSheetNavigator)
+
                 val currentDestination = navController.currentDestinationAsState().value
                     ?: if (AuthState.loggedRole.value == "owner") OwnerNavigationNavGraph.startDestination
                     else EmployeeNavigationNavGraph.startDestination
 
                 val bottomBarList = ownerBottomBarList
 
-                Scaffold(
-                    modifier = Modifier.fillMaxSize(),
-                    bottomBar = {
-                        if (bottomBarList.any { it.direction == currentDestination }) {
-                            BottomBar(
-                                bottomBarList = bottomBarList,
-                                navController = navController
+                ModalBottomSheetLayout(
+                    bottomSheetNavigator = bottomSheetNavigator,
+                    sheetShape = RoundedCornerShape(20.dp)
+                ) {
+                    Scaffold(
+                        modifier = Modifier.fillMaxSize(),
+                        bottomBar = {
+                            if (bottomBarList.any { it.direction == currentDestination }) {
+                                BottomBar(
+                                    bottomBarList = bottomBarList,
+                                    navController = navController
+                                )
+                            }
+                        }
+                    ) { innerPadding ->
+                        Column(
+                            modifier = Modifier.padding(innerPadding)
+                        ) {
+                            DestinationsNavHost(
+                                NavGraphs.main,
+                                navController = navController,
+                                startRoute = if (!AuthState.isLoggedIn.value) {
+                                    AuthScreenDestination
+                                } else {
+                                    if (AuthState.loggedRole.value == "owner") {
+                                        OwnerDashboardScreenDestination
+                                    } else {
+                                        EmployeeMenuScreenDestination
+                                    }
+                                }
                             )
                         }
-                    }
-                ) { innerPadding ->
-                    Column(
-                        modifier = Modifier.padding(innerPadding)
-                    ) {
-                        DestinationsNavHost(
-                            NavGraphs.main,
-                            navController = navController,
-                            startRoute = if (!AuthState.isLoggedIn.value) {
-                                AuthScreenDestination
-                            } else {
-                                if (AuthState.loggedRole.value == "owner") {
-                                    OwnerDashboardScreenDestination
-                                } else {
-                                    EmployeeMenuScreenDestination
-                                }
-                            }
-                        )
                     }
                 }
             }

@@ -15,6 +15,7 @@ import com.rmaprojects.owner.utils.mapToPrice
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
+import kotlin.math.sign
 
 class OwnerRepositoryImpl @Inject constructor(
     private val coreBranchRepository: CoreBranchRepository,
@@ -24,19 +25,23 @@ class OwnerRepositoryImpl @Inject constructor(
     override fun addEmployee(
         username: String,
         password: String,
+        branchId: String,
         employeeData: Roles.Employee
     ): Flow<ResponseState<Boolean>> = flow {
         emit(ResponseState.Loading)
         try {
-            val result = coreUserRepository.signEmployee(
+            val signEmployeeResult = coreUserRepository.signEmployee(
                 username,
                 password,
                 employeeData
             )
-            if (result.isSuccess) {
+            if (signEmployeeResult.isSuccess) {
+                signEmployeeResult.getOrNull().let {
+                    coreBranchRepository.editBranchEmployee(it ?: "", branchId)
+                }
                 emit(ResponseState.Success(true))
             } else {
-                emit(ResponseState.Error(result.exceptionOrNull()?.message.toString()))
+                emit(ResponseState.Error(signEmployeeResult.exceptionOrNull()?.message.toString()))
             }
         } catch (e: Exception) {
             emit(ResponseState.Error(e.message.toString()))
@@ -152,7 +157,8 @@ class OwnerRepositoryImpl @Inject constructor(
         name: String,
         longitude: Float,
         latitude: Float,
-        imageUrl: String
+        imageUrl: String,
+        employeeId: String?,
     ): Flow<ResponseState<Boolean>> = flow {
         emit(ResponseState.Loading)
         try {
@@ -160,9 +166,12 @@ class OwnerRepositoryImpl @Inject constructor(
                 longitude, latitude, imageUrl, name
             )
             if (result.isSuccess) {
-                result.getOrNull()?.let {
-                    emit(ResponseState.Success(true))
+                if (employeeId != null) {
+                    result.getOrNull()?.let { branchId ->
+                        coreBranchRepository.editBranchEmployee(employeeId, branchId)
+                    }
                 }
+                emit(ResponseState.Success(true))
             } else {
                 emit(ResponseState.Error(result.exceptionOrNull()?.message.toString()))
             }

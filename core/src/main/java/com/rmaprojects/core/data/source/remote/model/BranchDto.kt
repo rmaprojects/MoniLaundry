@@ -13,5 +13,6 @@ data class BranchDto(
     @SerialName("image_url") val imageUrl: String? = "",
     @SerialName("created_at") val createdAt: String = "",
     @SerialName("tbl_employee") val employees: List<EmployeeDetailsDto>? = null,
-    @SerialName("tbl_laundry_history") val laundryHistory: List<LaundryHistoryDto>? = null
+    @SerialName("tbl_laundry_history") val laundryHistory: List<LaundryHistoryDto>? = null,
+    @SerialName("tbl_prices") val pricesList: List<PricesDto>? = null
 )

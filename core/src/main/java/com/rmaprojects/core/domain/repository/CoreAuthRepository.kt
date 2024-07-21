@@ -1,6 +1,7 @@
 package com.rmaprojects.core.domain.repository
 
 import com.rmaprojects.core.common.Roles
+import io.github.jan.supabase.gotrue.user.UserInfo
 
 interface CoreAuthRepository {
 
@@ -19,7 +20,7 @@ interface CoreAuthRepository {
         username: String,
         password: String,
         employee: Roles.Employee
-    ): Result<Boolean>
+    ): Result<String>
 
     suspend fun logOut()
 

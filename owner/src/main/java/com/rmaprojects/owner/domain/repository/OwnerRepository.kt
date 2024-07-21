@@ -11,6 +11,7 @@ interface OwnerRepository {
     fun addEmployee(
         username: String,
         password: String,
+        branchId: String,
         employeeData: Roles.Employee
     ): Flow<ResponseState<Boolean>>
     fun editEmployee(
@@ -24,7 +25,7 @@ interface OwnerRepository {
     fun deleteEmployee(employeeId: String): Flow<ResponseState<Boolean>>
     fun editEmployeeBranch(employeeId: String, branchId: String): Flow<ResponseState<Boolean>>
     fun addBranch(
-        name: String, longitude: Float, latitude: Float, imageUrl: String
+        name: String, longitude: Float, latitude: Float, imageUrl: String, employeeId: String? = null
     ): Flow<ResponseState<Boolean>>
     fun getAllBranchInfo(): Flow<ResponseState<List<BranchData>>>
     fun getAllBranchInfoWithLaundryHistory(
